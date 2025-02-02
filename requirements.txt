@@ -1,5 +1,6 @@
 streamlit==1.25.0
-numpy==1.24.3
+uv pip install --upgrade pip setuptools wheel
+uv pip install "numpy>=1.25"
 pandas==1.5.3
 nltk==3.8.1
 scikit-learn==1.3.0
