@@ -7,7 +7,6 @@ from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-
 # Functions for Recommendation & Posters  
 def fetch_poster(movie_id):
     api_key = "8265bd1679663a7ea12ac168da84d2e8"
@@ -44,17 +43,11 @@ def recommend(movie_title, data, similarity):
 page_bg_img = '''
 <style>
 [data-testid="stAppViewContainer"] {
-    /*background: linear-gradient(to bottom right, #1E1E2E, #3A0CA3, #03045E);*/
     background-image: url("https://media.istockphoto.com/id/1434278254/vector/blue-and-pink-light-panoramic-defocused-blurred-motion-gradient-abstract-background-vector.jpg?s=612x612&w=0&k=20&c=_KXodNw25trgE0xDe0zFnzNiofFgV50aajKpcI9x_8I=");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
-}
-.css-1d391kg {  
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 1rem;
-    border-radius: 10px;
 }
 .css-1d391kg {  
     background-color: rgba(0, 0, 0, 0.6);
@@ -104,22 +97,30 @@ h2, h3 {
 
 span.movie-name {
     color: #F0F8FF;
-
+}
 </style>
 '''
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
-
-#Streamlit Web App Layout        
+# Streamlit Web App Layout        
 st.title("SmartPicks")
 st.markdown("<p>Select a movie from the dropdown to see recommendations!</p>", unsafe_allow_html=True)
+
 # Load preprocessed data and similarity matrix from pickle files
 @st.cache_resource
 def load_data():
+    # Load movies data from a local pickle file
     with open("movies_preprocessed.pkl", "rb") as f:
         data = pickle.load(f)
-    with open("similarity.pkl", "rb") as f:
-        sim = pickle.load(f)
+    
+    # Fetch the similarity matrix from an external URL
+    similarity_url = "https://drive.usercontent.google.com/download?id=1uvoIqrpWX9ILh7vzYUaqA1IV4iRYGDQA&export=download&confirm=t&uuid=adc73067-e26d-47a5-b4a1-fd6a2c56c0a9"  
+    response = requests.get(similarity_url)
+    if response.status_code == 200:
+        sim = pickle.loads(response.content)
+    else:
+        st.error("Failed to fetch similarity data.")
+        sim = None
     return data, sim
 
 data, similarity = load_data()
