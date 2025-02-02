@@ -1,0 +1,1 @@
+web: sh setup.sh && steamlit unn StreamlitWebsite.py
